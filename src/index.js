@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+
+import PageGame2048 from './components/PageGame2048'
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <PageGame2048 />
   </React.StrictMode>,
   document.getElementById('root')
 );
