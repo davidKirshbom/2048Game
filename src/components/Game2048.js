@@ -27,7 +27,7 @@ class Game2048 extends React.Component{
                         if(originPoint.row!==row||originPoint.column!==column)
                         {
                             animationBoard[originPoint.row][originPoint.column] = { row, column }
-                            animationBoard[originPoint.row][originPoint.column].tileId = `${originPoint.row}/${originPoint.column}`
+                            animationBoard[originPoint.row][originPoint.column].tileId = `${originPoint.row}${originPoint.column}`
                         }
                     })
                 }
@@ -89,7 +89,7 @@ class Game2048 extends React.Component{
                                     const tileValue = board[row][column].value;
                                     if(tileValue!=movingTile.innerHTML)
                                    { movingTile.innerHTML = tileValue;
-                                    const popTile = document.getElementById(`pop-tile${row}/${column}`)
+                                    const popTile = document.getElementById(`pop-tile${row}${column}`)
                                     popTile.innerHTML = tileValue;
                                     popTile.classList.remove('hide')
                                     popTile.classList.add("pop", `value-${tileValue}`)
@@ -185,8 +185,8 @@ class Game2048 extends React.Component{
         {
             for (let column = startColumn; column !== endColumn; column += columnFactor)
             {
-                const tile = document.getElementById(`${row}/${column}`)
-                const container = document.getElementById(`container${row}/${column}`)
+                const tile = document.getElementById(`${row}${column}`)
+                const container = document.getElementById(`container${row}${column}`)
                 if(isRows)
                 {
                     const zIndex=10 - row*rowFactor 
@@ -225,19 +225,29 @@ class Game2048 extends React.Component{
         return (
             <div className="game-container">
          
-            <div className="tiles-flexbox">
+            
                     <div className=" game-board">
-                        {board.map((data,index) =>
                         {
-                            const row = parseInt(index / 4);
-                            const column = index % 4;
-                            return (<div className="game-board-top">
-                                <div className="pop-tile hide" id={`pop-tile${row}/${column}`}>
-                                    
+                            this.state.board.map((row,rowIndex) => {
+                                return (
+                                    <div className={`grid-row number-${rowIndex+1}`}>
+                                        {
+                                            row.map((tile,column) => {
+                                                return (
+                                                    <div id={`grid-top${rowIndex}${column}`} className="game-board-top">
+                                <div className="pop-tile hide" id={`pop-tile${rowIndex}${column}`}>
+                                </div>  
                                 </div>
-                            </div>)
-                        })}
-                    </div>
+                                                )
+                                            }
+                                            )
+                                        }
+                                    </div>
+                                )
+                                })
+                                }
+                </div>
+                <div className="tiles-flexbox">
             { board.map((data, index) => {
                 const row = parseInt(index / 4);
                 const column = index % 4;
@@ -245,8 +255,8 @@ class Game2048 extends React.Component{
                 
                 return (
                      
-                    <div  className="tile-container" id={`container${row}/${column}`}>
-                    <div className={`tile value-${data.value}`} id={`${row}/${column}`}>
+                    <div  className="tile-container" id={`container${row}${column}`}>
+                    <div className={`tile value-${data.value}`} id={`${row}${column}`}>
                         {data.value}
             
             
