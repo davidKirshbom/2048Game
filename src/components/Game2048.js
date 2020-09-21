@@ -39,9 +39,8 @@ class Game2048 extends React.Component{
     }
     animateTiles = (board) => {
         return new Promise((resolve) => {
-            const gapSize = 10;
+            const gapSize = 0;
             const tileSize = 100;
-            let zIndex = 10;
             let translateX = (tileSize + gapSize);
             let translateY = (tileSize + gapSize);
             let animationBoard = this.initializeAnimationBoard(board)
@@ -65,44 +64,56 @@ class Game2048 extends React.Component{
 
                                 newAnimationBoard[row + 1][column] = this.deepCloneLocationObj(animationBoard[row][column]);
                        
-                                movingTile.className = "tile animate";
+                               
                                 movingTile.style.transform = `translateY(${itaresionCount*translateY}px)`
                             }
                             else if (destinationRow < row) {
                                 newAnimationBoard[row - 1][column] = this.deepCloneLocationObj(animationBoard[row][column]);
                                 
-                                movingTile.className = "tile animate";
+                             
                                 movingTile.style.transform = `translateY(${-itaresionCount*translateY}px)`
                             }
                             else if (destinationColumn < column) {
                                 newAnimationBoard[row][column - 1] = this.deepCloneLocationObj(animationBoard[row][column]);
-                                movingTile.className = "tile animate";
+                              
                                 movingTile.style.transform = `translateX(${-itaresionCount*translateX}px)`
                             }
                             else if (destinationColumn > column) {
                                 newAnimationBoard[row][column + 1] = this.deepCloneLocationObj(animationBoard[row][column]);
-                           
-                                movingTile.className = "tile animate";
                                 movingTile.style.transform = `translateX(${itaresionCount*translateX}px)`
                             }
-                           else if (row === destinationRow && column === destinationColumn) {
+                             if (row === destinationRow && column === destinationColumn) {
                                 animationBoard[row][column] = null;
                                 if(!this.thereIsOntherAnimationToPoint({row,column},animationBoard))
-                                    movingTile.innerHTML = board[row][column].value;
+                                {
+                                    const tileValue = board[row][column].value;
+                                    if(tileValue!=movingTile.innerHTML)
+                                   { movingTile.innerHTML = tileValue;
+                                    const popTile = document.getElementById(`pop-tile${row}/${column}`)
+                                    popTile.innerHTML = tileValue;
+                                    popTile.classList.remove('hide')
+                                    popTile.classList.add("pop", `value-${tileValue}`)
+                                    movingTile.classList.add(`value-${tileValue}`)}
+
+                                }
                                
                             }
                         }
                     }
                 }
-                        if (this.thereIsAnotherAnimation(animationBoard)) {
-                            clearInterval(animationInterval)
-                            resolve();
+                if (this.thereIsAnotherAnimation(animationBoard)) {
+                    setTimeout(() => {
+                        resolve();
+                        clearInterval(animationInterval)
+                    }, 250)
+                            
+                            
                         }
                         else {
                             animationBoard = newAnimationBoard
                             itaresionCount++;
                 }
-                    }, 1550)
+                    },210 )
         
         })
     }
@@ -216,9 +227,15 @@ class Game2048 extends React.Component{
          
             <div className="tiles-flexbox">
                     <div className=" game-board">
-                        {board.map(() =>
+                        {board.map((data,index) =>
                         {
-                            return (<div className="tile-border"></div>)
+                            const row = parseInt(index / 4);
+                            const column = index % 4;
+                            return (<div className="game-board-top">
+                                <div className="pop-tile hide" id={`pop-tile${row}/${column}`}>
+                                    
+                                </div>
+                            </div>)
                         })}
                     </div>
             { board.map((data, index) => {
@@ -227,14 +244,14 @@ class Game2048 extends React.Component{
                 // let zIndex = 10-row;
                 
                 return (
+                     
                     <div  className="tile-container" id={`container${row}/${column}`}>
-                  
-                    <div className="tile" id={`${row}/${column}`}>
+                    <div className={`tile value-${data.value}`} id={`${row}/${column}`}>
                         {data.value}
             
             
                             </div>
-                         
+                
                         </div> )
     })
           }
