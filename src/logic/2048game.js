@@ -9,21 +9,35 @@ class game2048 {
     constructor() {
         this.board = [
             [{ value: null, gotFrom: [] }, { value: 2, gotFrom: [] }, { value: 2, gotFrom: [] }, { value: null, gotFrom: [] }]
-          , [{value:2,gotFrom:[]}, {value:4,gotFrom:[]}, {value:null,gotFrom:[]}, {value:null,gotFrom:[]}]
+          , [{value:4,gotFrom:[]}, {value:4,gotFrom:[]}, {value:null,gotFrom:[]}, {value:null,gotFrom:[]}]
           , [{value:2,gotFrom:[]}, {value:4,gotFrom:[]}, {value:4,gotFrom:[]}, {value:null,gotFrom:[]}]
            , [{ value: 2, gotFrom: [] }, { value: 4, gotFrom: [] }, { value: 4, gotFrom: [] }, { value: 2, gotFrom: [] }]
         ]
-        
+        this.isGameOver = true;;
     
     }
-     
     addNumberToBoard = () => {
-        const rowToAdd = Math.random() * 100 % 3;
-        const columnToAdd = Math.random() * 100 % 3;
-        if (this.board[rowToAdd][columnToAdd] !== "")
-            this.addNumberToBoard();
-        else {
-            this.board[rowToAdd][columnToAdd] = Math.random() * 100 % 5 === 2 ? "4" : "2";
+        let rowToAdd =parseInt (Math.random() * 100 % 3);
+        let columnToAdd = parseInt(Math.random() * 100 % 3);
+        while(true)
+        {
+            if (this.board[rowToAdd][columnToAdd].value !== null) {
+                rowToAdd++;
+                if (rowToAdd < this.board.length)
+                {
+                    columnToAdd++;
+                    if (columnToAdd === this.board.length)
+                        columnToAdd = 0;
+                }
+                else {
+                    rowToAdd = 0;
+                }
+            }
+            else {
+                this.board[rowToAdd][columnToAdd].value =parseInt( (Math.random() * 100) )% 6 === 2 ? 4 : 2;
+                return { row: rowToAdd, column: columnToAdd }
+            }
+            this.isGameOver = this.isGameFinish();
         }
     }
     resetTilesGotFrom = (board) => {
@@ -64,186 +78,164 @@ class game2048 {
                         default:
                             return;
                            
-                           
-
                     }
-                  
-                  
                 }
-                
             }
-            
         }
     }
     moveTileUp = ({ row, column }) => {
         if (this.board[row][column].value == null) {
-            let changePlacesCount = 0
-            for (let rowIndex = row + 1; rowIndex < this.board.length; rowIndex++) {
-                if (this.board[rowIndex][column].value !==  null) {
-                    this.board[row + changePlacesCount][column].value = this.board[rowIndex][column].value
-                    if (this.board[rowIndex][column].gotFrom.length > 0)//added
-                    {
-                        this.board[row + changePlacesCount][column].gotFrom = [];
-                        this.board[rowIndex][column].gotFrom.forEach((location) => {
-                            this.board[row + changePlacesCount][column].gotFrom.push({row:location.row,column:location.column})
-                        })
-                    }  
-                    else
-                     this.board[row + changePlacesCount][column].gotFrom.push({row:rowIndex,column})
-                    this.board[rowIndex][column].value = null;
-                    changePlacesCount++;
-                }
-            }
-            if (changePlacesCount > 0)
-                this.moveTileUp({ row, column })
+            this.fillEmptyPlacesColumn({ row, column }, true)
         }
         else {
-            for (let rowIndex = row + 1; rowIndex < this.board.length; rowIndex++) {
-                if (this.board[rowIndex][column].value === this.board[row][column].value) {
-                    this.board[row][column].value = this.board[rowIndex][column].value + this.board[row][column].value
-                    this.board[rowIndex][column].gotFrom.forEach((location) => this.board[row][column].gotFrom.push(location))
-                    this.board[rowIndex][column].value = null;
-                    if (this.board[row][column].gotFrom.length === 0) {
-                        this.board[row][column].gotFrom.push({ row: rowIndex, column })
-                        if (row !== rowIndex)
-                            this.board[row][column].gotFrom.push({ row, column })
-                    }
+                        
+                for (let rowIndex = row + 1; rowIndex <this.board.length;rowIndex++)
+                if(this.board[rowIndex][column].value===this.board[row][column].value)
+                {
+                    this.margeTiles({ row, column }, { row: rowIndex, column })
                     return;
                 }
-                else if (this.board[rowIndex][column].value !== null)
-                    return;
-            }
+                    else if (this.board[rowIndex][column].value !== null)
+                        return
+     
         }
     }
     moveTileDown = ({ row, column }) => {
-        if (this.board[row][column].value ==null) {
-            let changePlacesCount = 0
-            for (let rowIndex = row - 1; rowIndex >= 0; rowIndex--) {
-                if (this.board[rowIndex][column].value !== null) {
-                    this.board[row - changePlacesCount][column].value = this.board[rowIndex][column].value
-                    if (this.board[rowIndex][column].gotFrom.length > 0)//added
-                    {
-                        this.board[row - changePlacesCount][column].gotFrom = [];
-                        this.board[rowIndex][column].gotFrom.forEach((location) => {
-                            this.board[row - changePlacesCount][column].gotFrom.push({row:location.row,column:location.column})
-                        })
-                    }  
-                    this.board[row - changePlacesCount][column].gotFrom.push({ row: rowIndex, column })
-                    this.board[rowIndex][column].value = null;
-                    changePlacesCount++;
-                }
-            }
-            if (changePlacesCount > 0)
-                this.moveTileDown({ row, column })
+        if (this.board[row][column].value == null) {
+            this.fillEmptyPlacesColumn({row,column},false)
         }
         else {
-            for (let rowIndex = row - 1; rowIndex >= 0; rowIndex--) {
-                if (this.board[rowIndex][column].value === this.board[row][column].value) {
-                    this.board[row][column].value = this.board[rowIndex][column].value + this.board[row][column].value
-                    this.board[rowIndex][column].gotFrom.forEach((location)=>this.board[row][column].gotFrom.push(location))
-                    this.board[rowIndex][column].value = null;
-                    if(this.board[row][column].gotFrom.length===0)
-                    {    this.board[row][column].gotFrom.push({ row: rowIndex, column })
-                    if (row !== rowIndex)
-                    this.board[row][column].gotFrom.push({row,column})}
-                    return;
-                }
+            for (let rowIndex = row - 1; rowIndex >= 0;rowIndex--)
+            if(this.board[rowIndex][column].value===this.board[row][column].value)
+            {
+                this.margeTiles({ row, column }, { row: rowIndex, column })
+                return;
+            }
                 else if (this.board[rowIndex][column].value !== null)
-                    return;
+                    return
+ 
+        }
+    }
+    fillEmptyPlacesColumn = ({ row, column },isUp) => {
+        const factorUpDown = isUp ? 1 : -1;
+        const endRow = isUp ? this.board.length : -1;
+        let changePlacesCount = 0
+        for (let rowIndex = row + factorUpDown; rowIndex !== endRow; rowIndex+=factorUpDown) {
+            if (this.board[rowIndex][column].value !== null) {
+                const rowIndexMoveTo = row + changePlacesCount * factorUpDown;
+                this.board[rowIndexMoveTo][column].value = this.board[rowIndex][column].value
+                if (this.board[rowIndex][column].gotFrom.length > 0)
+                {
+                    this.board[rowIndexMoveTo][column].gotFrom = [];
+                    this.board[rowIndex][column].gotFrom.forEach((location) => {
+                        this.board[rowIndexMoveTo][column].gotFrom.push({row:location.row,column:location.column})
+                    })
+                }  
+                else
+                 this.board[rowIndexMoveTo][column].gotFrom.push({row:rowIndex,column})
+                this.board[rowIndex][column].value = null;
+                changePlacesCount++;
             }
         }
+        if (changePlacesCount > 0)
+            {if(isUp)
+                this.moveTileUp({ row, column })
+            else this.moveTileDown({row,column})}
     }
     moveTileRight = ({ row, column }) => {
         if (this.board[row][column].value === null) {
-            let changePlacesCount = 0
-            for (let columnIndex = column - 1; columnIndex >= 0; columnIndex--) {
-                if (this.board[row][columnIndex].value !== null) {
-                    this.board[row][column - changePlacesCount].value = this.board[row][columnIndex].value
-                    if (this.board[row][columnIndex].gotFrom.length > 0)//added
-                    {
-                        this.board[row ][column - changePlacesCount].gotFrom = [];
-                        this.board[row][columnIndex].gotFrom.forEach((location) => {
-                            this.board[row][column - changePlacesCount].gotFrom.push({row:location.row,column:location.column})
-                        })
-                    }  
-                    this.board[row][column - changePlacesCount].gotFrom = []
-                     this.board[row][columnIndex].gotFrom.forEach((location)=>this.board[row][column - changePlacesCount].gotFrom.push({row:location.row,column:location.column}))
-                    this.board[row][column - changePlacesCount].gotFrom.push({ row, column: columnIndex })
-                    
-                    this.board[row][columnIndex].value = null;
-                    changePlacesCount++;
-                }
-            }
-            if (changePlacesCount > 0)
-                this.moveTileRight({ row, column })
+            this.fillEmptyPlacesRow({ row, column }, false);
         }
         else {
-            for (let columnIndex = column - 1; columnIndex >= 0; columnIndex--) {
-                if (this.board[row][columnIndex].value === this.board[row][column].value) {
-                    this.board[row][column].value = this.board[row][columnIndex].value + this.board[row][column].value
-                    this.board[row][columnIndex].gotFrom.forEach((location)=>this.board[row][column].gotFrom.push({row:location.row,column:location.column}))
-                    this.board[row][columnIndex].value = null;
-                    if(this.board[row][column].gotFrom.length===0)
-                    {
-                        this.board[row][column].gotFrom.push({ row, column: columnIndex })
-                    if (column !== columnIndex)
-                        this.board[row][column].gotFrom.push({ row, column })
-                    }
+            
+                for (let columnIndex = column - 1;  columnIndex >= 0;columnIndex--)
+                if(this.board[row][columnIndex].value===this.board[row][column].value)
+                {
+                    this.margeTiles({ row, column }, { row, column: columnIndex })
                     return;
                 }
-                else if (this.board[row][columnIndex].value !== null)
-                    return;
-            }
+                    else if (this.board[row][columnIndex].value !== null)
+                        return
         }
     }
     moveTileLeft = ({ row, column }) => {
    
         if (this.board[row][column].value === null) {
-            let changePlacesCount = 0
-            for (let columnIndex = column + 1; columnIndex < this.board.length; columnIndex++) {
+            this.fillEmptyPlacesRow({ row, column }, true)
+        }
+        else {
+            
+                
+                for (let columnIndex = column + 1;  columnIndex <this.board.length;columnIndex++)
+                if(this.board[row][columnIndex].value===this.board[row][column].value)
+                {
+                    this.margeTiles({ row, column }, { row, column: columnIndex })
+                    return;
+                }
+                    else if (this.board[row][columnIndex].value !== null)
+                        return
+        }
+    }
+    fillEmptyPlacesRow = ({ row, column }, isLeft) => { 
+        let changePlacesCount = 0;
+        const factorRightLeft = isLeft ? 1 : -1;
+        const endColumn = isLeft ? this.board.length : -1;
+            for (let columnIndex = column +factorRightLeft; columnIndex !==endColumn; columnIndex+=factorRightLeft) {
+                const columnIndexMoveTo = column + changePlacesCount * factorRightLeft;
                 if (this.board[row][columnIndex].value !== null) {
-                    this.board[row][column + changePlacesCount].value = this.board[row][columnIndex].value
+                    this.board[row][columnIndexMoveTo].value = this.board[row][columnIndex].value
                     if (this.board[row][columnIndex].gotFrom.length > 0)//added
                     {
-                        this.board[row ][column + changePlacesCount].gotFrom = [];
+                        this.board[row][columnIndexMoveTo].gotFrom = [];
                         this.board[row][columnIndex].gotFrom.forEach((location) => {
-                            this.board[row][column + changePlacesCount].gotFrom.push({row:location.row,column:location.column})
-                        })
+                            this.board[row][columnIndexMoveTo].gotFrom.push({ row: location.row, column: location.column })
+                        });
                     }  
-                    this.board[row][column + changePlacesCount].gotFrom.push({ row, column: columnIndex })
-               
+                    this.board[row][columnIndexMoveTo].gotFrom = []
+                     this.board[row][columnIndex].gotFrom.forEach((location)=>this.board[row][column - changePlacesCount].gotFrom.push({row:location.row,column:location.column}))
+                    this.board[row][columnIndexMoveTo].gotFrom.push({ row, column: columnIndex })
+                    
                     this.board[row][columnIndex].value = null;
                     changePlacesCount++;
                 }
             }
-            if (changePlacesCount > 0)
-                this.moveTileLeft({ row, column })
-        }
-        else {
-            for (let columnIndex = column + 1; columnIndex < this.board.length; columnIndex++) {
-                if (this.board[row][columnIndex].value === this.board[row][column].value) {
-                    
-                    this.board[row][column].value = this.board[row][columnIndex].value + this.board[row][column].value
-                    this.board[row][columnIndex].gotFrom.forEach((location)=>this.board[row][column].gotFrom.push(location))
-
-                    this.board[row][columnIndex].value = null;
-                    if(this.board[row][column].gotFrom.length===0)
-                    {this.board[row][column].gotFrom.push({row,column:columnIndex})
-                    if (column !== columnIndex)
-                    this.board[row][column].gotFrom.push({row,column})}
-                    return;
-                }
-                else if (this.board[row][columnIndex].value !== null)
-                    return;
-            }
+        if (changePlacesCount > 0) {
+            if (isLeft)
+                this.moveTileLeft({row,column})
+            else this.moveTileRight({ row, column })
         }
     }
+    margeTiles = (margeLocation,otherTileLocation ) => {
+        let tileMargeTo = this.board[margeLocation.row][margeLocation.column]
+        let otherTile=this.board[otherTileLocation.row][otherTileLocation.column]
+ 
+        tileMargeTo.value += otherTile.value;
+        otherTile.gotFrom.forEach((location) => tileMargeTo.gotFrom.push(location))
+        otherTile.value = null;
+        otherTile.gotFrom = [];
+        if (tileMargeTo.gotFrom.length === 0) {
+            tileMargeTo.gotFrom.push({ row: otherTileLocation.row, column:otherTileLocation.column })
+            if (tileMargeTo.row !== otherTileLocation.row)
+            tileMargeTo.gotFrom.push({ row:margeLocation.row, column:margeLocation.column })
+        }
+        
+    
+ 
+    }
+    isGameFinish = () => {
+        const board = this.board;
+        for (let row = 0; row < board.length; row++) {
+            for (let column = 0; column < board.length; column++) {
+                if (column + 1 < board.length && board[row][column] === board[row][column + 1])
+                    return false;
+                if (row + 1 < board.length && board[row][column] === board[row + 1][column])
+                    return false;
+            }
+            
+        }
+        return true;
+    }
+   
 }
-
-// let game = new game2048();
-// game.moveTiles("LEFT");
-// console.log(game.board);
-// game.moveTiles("DOWN");
-// console.log(game.board);
 export {possibaleMovesList,game2048 as default};
         
