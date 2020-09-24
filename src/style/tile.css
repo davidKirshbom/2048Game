@@ -1,0 +1,123 @@
+.tile-container{
+    display: flex;
+    overflow: visible;
+    background: #CDC1B4;
+    
+    height: 100%;
+    width: 100;
+  margin-left: 0px;
+   align-items: center;
+   justify-content: center;
+  border-radius: 10px;
+  border: 5px solid #bbada0; 
+}
+.tile{
+    
+    display: flex;
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+    font-weight: bold;
+    font-size:50px ;
+    word-wrap: break-word;
+    position: relative;
+    overflow: visible;
+    height: 89px;
+    width: 89px;
+   align-items: center;
+   justify-content: center;
+   overflow: visible;
+   transition: transform linear .5s;
+   border-radius: 3px; 
+
+}
+.pop{
+    display: flex;
+    position: fixed;
+    animation:pop .5s ;
+    height: 88px;
+    width: 88px;
+    overflow: visible;
+    border: none;
+    border-radius: 3px;
+   
+}
+.apper{
+    animation:apper .5s ;
+}
+@keyframes apper{
+    from{
+   opacity: 0;
+   transform: scale(0,0); 
+    }
+    to{
+        opacity: 1;
+        transform: scale(1,1); 
+    }
+    }
+   @keyframes pop{
+      0% {
+     transform: scale(1,1);
+   }
+   50%{
+       
+       transform: scale(1.15,1.15);
+   }
+   100%{
+       transform: scale(0.7,0.7);
+   }
+   }
+   @media  (max-width: 400px){
+       .tile{
+        width: 53px;
+        height: 53px;
+        font-size:30px ;
+       }
+       .pop{
+        width: 53px;
+        height: 53px;
+        font-size:30px ;
+       }
+   }
+.value-2{
+    background: #EEE4DA;
+    color: #776e65;
+    }
+    .value-4{
+        background:#EDE0C8;
+        color: #776e65;
+    }
+    .value-8{
+        background:#F2B179;
+        color:white;
+    }
+    .value-16{
+        background:#F59563;
+        color:white;
+    }
+    .value-32{
+        background:#F67C5F;
+        color:white;
+    }
+    .value-64{
+        background:#F65E3B;
+        color:white;
+    }
+    .value-128{
+        background:#EDCF72;
+        color:white;
+    }
+    .value-256{
+        background:#EDCC61;
+        color:white;
+    }
+    .value-512{
+        background:#EDC850;
+        color:white;
+    }
+    .value-1024{
+        background:#EDC53F;
+        color:white;
+    }
+    .value-2024{
+        background:#edc22e;
+        color:white;
+    }

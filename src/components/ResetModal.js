@@ -1,5 +1,5 @@
 import React from 'react'
-
+import '../style/resetModal.css'
 export default ({ resteCallBack, isEnable}) => {
     return (
         <div className={`modal ${isEnable ? '' : 'hide'}`} >

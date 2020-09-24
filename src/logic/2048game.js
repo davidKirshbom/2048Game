@@ -8,19 +8,21 @@ const possibaleMovesList = {
 class game2048 {
     constructor() {
         this.board = [
-            [{ value: null, gotFrom: [] }, { value: 2, gotFrom: [] }, { value: 2, gotFrom: [] }, { value: null, gotFrom: [] }]
-          , [{value:4,gotFrom:[]}, {value:4,gotFrom:[]}, {value:null,gotFrom:[]}, {value:null,gotFrom:[]}]
-          , [{value:2,gotFrom:[]}, {value:4,gotFrom:[]}, {value:4,gotFrom:[]}, {value:null,gotFrom:[]}]
-           , [{ value: 2, gotFrom: [] }, { value: 4, gotFrom: [] }, { value: 4, gotFrom: [] }, { value: 2, gotFrom: [] }]
+            [{ value: null, gotFrom: [] }, { value: null, gotFrom: [] }, { value: null, gotFrom: [] }, { value: null, gotFrom: [] }]
+          , [{value:null,gotFrom:[]}, {value:null,gotFrom:[]}, {value:null,gotFrom:[]}, {value:null,gotFrom:[]}]
+          , [{value:null,gotFrom:[]}, {value:null,gotFrom:[]}, {value:null,gotFrom:[]}, {value:null,gotFrom:[]}]
+           , [{ value: null, gotFrom: [] }, { value: null, gotFrom: [] }, { value: null, gotFrom: [] }, { value: null, gotFrom: [] }]
         ]
-        this.isGameOver = true;;
+        this.isGameOver = false;
     
     }
     addNumberToBoard = () => {
         let rowToAdd =parseInt (Math.random() * 100 % 3);
         let columnToAdd = parseInt(Math.random() * 100 % 3);
-        while(true)
+        let foundRandomEmptyPlace = false;
+        while(!foundRandomEmptyPlace)
         {
+            
             if (this.board[rowToAdd][columnToAdd].value !== null) {
                 rowToAdd++;
                 if (rowToAdd < this.board.length)
@@ -35,10 +37,14 @@ class game2048 {
             }
             else {
                 this.board[rowToAdd][columnToAdd].value =parseInt( (Math.random() * 100) )% 6 === 2 ? 4 : 2;
-                return { row: rowToAdd, column: columnToAdd }
+                foundRandomEmptyPlace = true;
+              
             }
-            this.isGameOver = this.isGameFinish();
+         
         }
+        this.isGameOver = this.isGameFinish();
+      
+        return { row: rowToAdd, column: columnToAdd }
     }
     resetTilesGotFrom = (board) => {
         for (let row = 0; row < board.length; row++) {
@@ -226,9 +232,11 @@ class game2048 {
         const board = this.board;
         for (let row = 0; row < board.length; row++) {
             for (let column = 0; column < board.length; column++) {
-                if (column + 1 < board.length && board[row][column] === board[row][column + 1])
+                if (board[row][column].value == null)
                     return false;
-                if (row + 1 < board.length && board[row][column] === board[row + 1][column])
+                if (column + 1 < board.length && board[row][column].value === board[row][column + 1].value)
+                    return false;
+                if (row + 1 < board.length && board[row][column].value === board[row + 1][column].value)
                     return false;
             }
             

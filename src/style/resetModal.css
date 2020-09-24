@@ -1,0 +1,39 @@
+.modal{
+    font-family: "Clear Sans", "Helvetica Neue", Arial, sans-serif;
+    height: 400px;
+    width: 400px;
+    display: flex;
+    flex-flow: column;
+   justify-content: center;
+   align-items: center;
+    position: absolute;
+    background: rgba(238, 228, 218, 0.73);
+    z-index: 9;
+}
+@media  (max-width: 400px){
+    .modal{
+       
+        height: 260px;
+        width: 260px;
+ 
+    }
+}
+.modal>h1{
+    font-size: 3.5rem;
+    color: #776e65;
+    opacity: 1;
+    text-align: center;
+    
+}
+.reset-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10%;
+    width: 45%;
+    background: #8f7a66;
+    font-weight: bolder;
+    color:white;
+    cursor: pointer;
+    opacity: 1;
+}
