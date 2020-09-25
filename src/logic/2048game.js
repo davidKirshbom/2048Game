@@ -22,7 +22,6 @@ class game2048 {
         let foundRandomEmptyPlace = false;
         while(!foundRandomEmptyPlace)
         {
-            
             if (this.board[rowToAdd][columnToAdd].value !== null) {
                 rowToAdd++;
                 if (rowToAdd < this.board.length)

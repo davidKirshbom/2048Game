@@ -18,31 +18,38 @@ class Game2048 extends React.Component {
     componentDidMount() {
         this.addTile(true);
         this.addTile(true);
+        
         window.addEventListener("keydown", (event) => {
+            let pressLegalKey = false;
             if (!this.isAnimateOn) {
               
                 switch (event.key) {
                     case ("ArrowDown"):
                         this.LogicGame2048.moveTiles(possibaleMovesList.down)
                         this.orginzeGridZIndexBigToSmallForAnimation(0, 0, 4, 4, true)
+                        pressLegalKey = true;
                         break;
                     case ("ArrowUp"):
                         this.LogicGame2048.moveTiles(possibaleMovesList.up)
                         this.orginzeGridZIndexBigToSmallForAnimation(3, 3, -1, -1, true)
+                        pressLegalKey = true;
                         break;
                     case ("ArrowRight"):
                         this.LogicGame2048.moveTiles(possibaleMovesList.right)
                         this.orginzeGridZIndexBigToSmallForAnimation(0, 0, 4, 4, false)
+                        pressLegalKey = true;
                         break;
                     case ("ArrowLeft"):
                         this.LogicGame2048.moveTiles(possibaleMovesList.left)
                         this.orginzeGridZIndexBigToSmallForAnimation(3, 3, -1, -1, false)
+                        pressLegalKey = true;
                         break;
                     
                 }
-                this.isAnimateOn = true;
+                if(pressLegalKey)
+                {this.isAnimateOn = true;
                 this.animateTiles(this.LogicGame2048.board)
-                this.addTile();
+                this.addTile();}
                 
             }
             
@@ -50,6 +57,7 @@ class Game2048 extends React.Component {
             
         })
     }
+    
     didMakeMove = (newBoard) => {
         const previuseBoard = this.state.board
         for (let row = 0; row < newBoard.length; row++) {
@@ -235,7 +243,7 @@ class Game2048 extends React.Component {
         return (
             <div className="game-container">
               
-                <div className="tiles-flexbox">
+                <div className="tiles-grid">
                     <ResetModal resteCallBack={this.reset} isEnable={this.state.isGameOver}/>
                     {board.map((row, rowIndex) => {
                         return row.map((data, columnIndex) => {

@@ -2,7 +2,6 @@
     display: flex;
     overflow: visible;
     background: #CDC1B4;
-    
     height: 100%;
     width: 100;
   margin-left: 0px;
@@ -30,15 +29,8 @@
 
 }
 .pop{
-    display: flex;
     position: fixed;
-    animation:pop .5s ;
-    height: 88px;
-    width: 88px;
-    overflow: visible;
-    border: none;
-    border-radius: 3px;
-   
+    animation:pop .5s ;  
 }
 .apper{
     animation:apper .5s ;

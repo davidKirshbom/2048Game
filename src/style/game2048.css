@@ -18,7 +18,7 @@
     position: relative;
     min-width:211px ;
 }
-.tiles-flexbox{
+.tiles-grid{
     display: grid;
     grid-template-columns:repeat(4,25%) ;
     grid-template-rows:repeat(4,25%) ;
@@ -40,7 +40,7 @@
         width: 260px;
         height: 260px;
     }
-    .tiles-flexbox{
+    .tiles-grid{
         display: grid;
         grid-template-columns:repeat(4,25%) ;
         grid-template-rows:repeat(4,25%) ;
